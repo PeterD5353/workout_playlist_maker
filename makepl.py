@@ -19,6 +19,8 @@ CLIENT_SECRET = "10859191e6a34ac8afe7b7639a644d69"
 # Initialize Spotipy client
 sp = spotipy.Spotify(auth_manager=spotipy.SpotifyClientCredentials(client_id=CLIENT_ID, client_secret=CLIENT_SECRET))
 
+csv = pd.read_csv("tracklist.csv")
+
 # Extracts the track URI from a Spotify share URL
 def get_track_uri(url):
     match = re.search(r'track\/(\w+)', url)
@@ -67,7 +69,7 @@ def calculate_cosine_similarity(input_vector, candidate_features):
 # Gets similar tracks from BigQuery table using content-based filtering
 def get_similar_track_uris(track_uri):
     
-    candidates_df = pd.read_csv("tracklist.csv")
+    candidates_df = csv
 
     # Generate input_track_fatures and save on df
     track_features = sp.audio_features(track_uri)[0]
@@ -113,31 +115,28 @@ def display_similar_songs (track_uris):
 
     # display output
     track_num = 1
+    songs_out = []
     for uri, meta in metadata.items():
         current_uri = uri
         current_meta = meta
-        print(f"Track: {track_num}: {current_meta['name']} by {current_meta['artist']} ({uri})")
+        songs_out.append(f"{current_meta['name']} by {current_meta['artist']}\n")
         track_num += 1
+    return songs_out
 
 # display info
 def display_input_song (uri):
     # extract metadata
     meta = get_track_properties(uri) #returns {'name': x, 'artist': x}
-    print(f"You entered this song: {meta['name']} by {meta['artist']} ({uri})")
+    song_info = f"You entered this song: {meta['name']} by {meta['artist']} ({uri})"
+    return song_info
 
-
-print()
-print("WELCOME TO THIS APP!")
-print("ENTER A SPOTIFY SONG LINK THAT MATCHES THE MOOD OF YOUR WORKOUT TO GET THE IDEAL WORKOUT PLAYLIST BASED ON SIMILAR SONGS")
-print()
-print('Enter a Spotify Song Link (URL):')
-
+'''
 # Extract url and print input song
-track_url = input().strip() # remove leading and trailing spaces
+track_url = .strip() # remove leading and trailing spaces
 track_uri = get_track_uri(track_url)
-print()
+
 display_input_song (track_uri)
-print()
+
 
 #Extract similar songs and display them
 similar_track_uris = get_similar_track_uris(track_uri)
@@ -146,3 +145,4 @@ display_similar_songs (similar_track_uris)
 print()
 print("GOODBYE!")
 print()
+'''
